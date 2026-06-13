@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Velora Cafe • Agartala</title>
+    <!-- Tailwind CSS & FontAwesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap');
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; }
+        .heading { font-family: 'Playfair Display', sans-serif; }
+        .hero-bg { 
+            background-image: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=2000&q=80'); 
+        }
+        input, select, textarea { outline: none; transition: all 0.3s ease; }
+        input:focus, select:focus, textarea:focus { 
+            border-color: #fbbf24 !important; 
+            background-color: rgba(24, 24, 27, 0.9) !important; 
+            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.15); 
+        }
+        .toast-slide-in {
+            animation: slideUp 0.3s ease forwards;
+        }
+        @keyframes slideUp {
+            from { transform: translate(-50%, 20px); opacity: 0; }
+            to { transform: translate(-50%, 0); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-zinc-950 text-zinc-200 antialiased">
+
+    <!-- Navbar -->
+    <nav class="bg-black/95 backdrop-blur-md fixed w-full z-50 border-b border-amber-900/40">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <span class="text-3xl">☕</span>
+                <div>
+                    <span class="heading text-2xl md:text-3xl font-bold tracking-tight text-white">Velora</span>
+                    <p class="text-[10px] text-amber-400 font-semibold tracking-widest -mt-1">CAFE & RESTAURANT</p>
+                </div>
+            </div>
+            
+            <div class="hidden md:flex gap-8 font-medium text-sm text-zinc-300">
+                <a href="#menu" class="hover:text-amber-400 transition-colors">Menu</a>
+                <a href="#gallery" class="hover:text-amber-400 transition-colors">Gallery</a>
+                <a href="#reviews" class="hover:text-amber-400 transition-colors">Reviews</a>
+                <a href="#reserve" class="hover:text-amber-400 transition-colors">Book Table</a>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <a href="https://wa.me/919362102308" target="_blank" rel="noopener"
+                   class="bg-green-600 hover:bg-green-500 transition-colors px-4 py-2.5 rounded-xl flex items-center gap-2 text-sm font-semibold text-white">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                    <span class="hidden sm:inline">Order on WhatsApp</span>
+                </a>
+                <button onclick="toggleCart()" class="relative p-2.5 hover:text-amber-400 transition-colors" aria-label="Open Cart">
+                    <i class="fa-solid fa-bag-shopping text-2xl"></i>
+                    <span id="cartCount" class="absolute top-0 right-0 bg-amber-500 text-black text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-bg h-screen bg-cover bg-center flex items-center justify-center">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <p class="text-amber-400 uppercase tracking-widest text-xs font-bold bg-amber-400/10 px-4 py-1.5 rounded-full inline-block mb-4">Agartala, Tripura</p>
+            <h1 class="heading text-5xl md:text-7xl font-bold mt-2 mb-6 tracking-tight text-white leading-tight">Moments worth savoring</h1>
+            <p class="text-lg md:text-xl text-amber-100/80 max-w-2xl mx-auto font-light">Premium coffee • Freshly prepared meals • Warm hospitality</p>
+            <div class="mt-8 flex justify-center gap-4">
+                <a href="#menu" class="bg-amber-500 hover:bg-amber-400 text-black font-semibold px-8 py-3.5 rounded-xl transition-all">Explore Menu</a>
+                <a href="#reserve" class="border border-zinc-700 hover:border-zinc-500 bg-zinc-900/50 text-white font-medium px-8 py-3.5 rounded-xl transition-all">Book Table</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu" class="py-24 bg-zinc-900">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center max-w-xl mx-auto mb-12">
+                <h2 class="heading text-4xl md:text-5xl font-bold text-white mb-4">Signature Menu</h2>
+                <p class="text-zinc-400 text-sm">Handcrafted drinks and dishes prepared daily with locally-sourced premium ingredients.</p>
+            </div>
+
+            <!-- Category Filter Tabs -->
+            <div class="flex flex-wrap justify-center gap-2 mb-12">
+                <button onclick="filterMenu('all')" id="tab-all" class="menu-tab bg-amber-500 text-black px-5 py-2 rounded-xl text-sm font-semibold transition-all">All Items</button>
+                <button onclick="filterMenu('beverage')" id="tab-beverage" class="menu-tab bg-zinc-800 text-zinc-300 hover:bg-zinc-700 px-5 py-2 rounded-xl text-sm font-semibold transition-all">Beverages</button>
+                <button onclick="filterMenu('breakfast')" id="tab-breakfast" class="menu-tab bg-zinc-800 text-zinc-300 hover:bg-zinc-700 px-5 py-2 rounded-xl text-sm font-semibold transition-all">Breakfast</button>
+                <button onclick="filterMenu('main')" id="tab-main" class="menu-tab bg-zinc-800 text-zinc-300 hover:bg-zinc-700 px-5 py-2 rounded-xl text-sm font-semibold transition-all">Mains</button>
+                <button onclick="filterMenu('dessert')" id="tab-dessert" class="menu-tab bg-zinc-800 text-zinc-300 hover:bg-zinc-700 px-5 py-2 rounded-xl text-sm font-semibold transition-all">Desserts</button>
+            </div>
+            
+            <div id="menuContainer" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Javascript Populated -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="py-24 bg-black">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="heading text-4xl md:text-5xl text-center font-bold text-white mb-12">Inside Velora</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="overflow-hidden rounded-2xl aspect-square"><img src="https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=600&q=80" alt="Cafe ambiance 1" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"></div>
+                <div class="overflow-hidden rounded-2xl aspect-square"><img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=600&q=80" alt="Barista pour" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"></div>
+                <div class="overflow-hidden rounded-2xl aspect-square"><img src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=600&q=80" alt="Dining arrangement" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"></div>
+                <div class="overflow-hidden rounded-2xl aspect-square"><img src="https://images.unsplash.com/photo-1498804103079-a6351b050096?auto=format&fit=crop&w=600&q=80" alt="Artisan coffee mug" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section id="reviews" class="py-24 bg-zinc-900">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="heading text-4xl md:text-5xl text-center font-bold text-white mb-12">What Our Guests Say</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-zinc-800/60 border border-zinc-700/30 p-8 rounded-2xl flex flex-col justify-between">
+                    <p class="italic text-zinc-300 leading-relaxed">"Best cafe in Agartala! The avocado toast and cappuccino are amazing. Highly aesthetic layout and cozy vibe."</p>
+                    <div class="mt-6 flex items-center gap-3">
+                        <div class="w-10 h-10 bg-amber-400 font-bold text-black flex items-center justify-center rounded-full text-sm">PD</div>
+                        <div>
+                            <div class="font-semibold text-white">Priya Das</div>
+                            <div class="text-amber-400 text-xs">★★★★★</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-zinc-800/60 border border-zinc-700/30 p-8 rounded-2xl flex flex-col justify-between">
+                    <p class="italic text-zinc-300 leading-relaxed">"Perfect place for work and remote sessions. Great WiFi infrastructure, excellent robust espresso blends, and helpful staff."</p>
+                    <div class="mt-6 flex items-center gap-3">
+                        <div class="w-10 h-10 bg-blue-400 font-bold text-black flex items-center justify-center rounded-full text-sm">AR</div>
+                        <div>
+                            <div class="font-semibold text-white">Arjun Roy</div>
+                            <div class="text-amber-400 text-xs">★★★★☆</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-zinc-800/60 border border-zinc-700/30 p-8 rounded-2xl flex flex-col justify-between">
+                    <p class="italic text-zinc-300 leading-relaxed">"The truffle pasta and signature desserts are incredible! Highly recommended spot for fine date nights."</p>
+                    <div class="mt-6 flex items-center gap-3">
+                        <div class="w-10 h-10 bg-pink-400 font-bold text-black flex items-center justify-center rounded-full text-sm">SD</div>
+                        <div>
+                            <div class="font-semibold text-white">Sneha Deb</div>
+                            <div class="text-amber-400 text-xs">★★★★★</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reservation Section -->
+    <section id="reserve" class="py-24 bg-black">
+        <div class="max-w-2xl mx-auto px-6">
+            <div class="text-center mb-10">
+                <h2 class="heading text-4xl md:text-5xl font-bold text-white mb-3">Reserve a Table</h2>
+                <p class="text-zinc-400 text-sm">Avoid the wait by securing your dining space setup in advance.</p>
+            </div>
+            <form id="reserveForm" onsubmit="makeReservation(event)" class="space-y-6 bg-zinc-900 p-8 md:p-10 rounded-2xl border border-zinc-800 shadow-xl">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-xs text-zinc-400 font-medium">Full Name</label>
+                        <input type="text" id="resName" placeholder="John Doe" required class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3.5 text-zinc-100">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs text-zinc-400 font-medium">Phone Number</label>
+                        <input type="tel" id="resPhone" placeholder="10-digit number" pattern="[0-9]{10}" required class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3.5 text-zinc-100">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-xs text-zinc-400 font-medium">Reservation Date</label>
+                        <input type="date" id="resDate" required class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3.5 text-zinc-100">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs text-zinc-400 font-medium">Preferred Time</label>
+                        <select id="resTime" required class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3.5 text-zinc-100">
+                            <option value="">Select Time</option>
+                            <option value="11:30 AM">11:30 AM</option>
+                            <option value="1:00 PM">1:00 PM</option>
+                            <option value="6:30 PM">6:30 PM</option>
+                            <option value="8:00 PM">8:00 PM</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs text-zinc-400 font-medium">Special Requests (Optional)</label>
+                    <textarea id="resNotes" placeholder="E.g., High-chair for kids, window seat, birthday setup..." class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3.5 text-zinc-100 resize-none h-24"></textarea>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                    <button type="submit" class="w-full py-4 bg-amber-500 hover:bg-amber-400 text-black font-semibold rounded-xl text-base transition-colors">Confirm Booking</button>
+                    <button type="reset" class="w-full py-4 border border-zinc-700 hover:border-zinc-500 text-zinc-300 font-medium rounded-xl text-base transition-colors">Clear Form</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Mobile App QR Section -->
+    <section id="visit" class="py-24 bg-zinc-900 border-t border-zinc-800/50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <p class="text-amber-400 uppercase tracking-widest text-xs font-bold mb-2">Scan to Browse</p>
+                    <h2 class="heading text-4xl md:text-5xl font-bold text-white mb-6">Open menu instantly on your mobile device</h2>
+                    <p class="text-zinc-400 text-base leading-relaxed">Use your smartphone camera to quickly capture the QR matrix below. Instantly inspect updated dynamic pricing menus, view available counter items, and keep order tallies synchronized right inside your palm.</p>
+                    <a href="https://ruhitachung.github.io/velora-cafe/not" target="_blank" rel="noopener" class="inline-block mt-8 bg-amber-500 hover:bg-amber-400 text-black px-6 py-3.5 rounded-xl font-semibold transition-colors">Visit Online Interface</a>
+                </div>
+                <div class="bg-zinc-950 rounded-2xl p-8 text-center border border-zinc-800 max-w-sm mx-auto shadow-2xl">
+                    <div class="bg-white p-4 rounded-xl inline-block">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://ruhitachung.github.io/velora-cafe/not" alt="Scan to visit Velora Cafe website" class="mx-auto rounded-lg">
+                    </div>
+                    <p class="mt-4 text-xs text-zinc-500">Scan this code using standard native iOS / Android camera systems.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black border-t border-zinc-900 py-12">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <h3 class="heading text-xl font-bold text-white mb-4">Velora Cafe</h3>
+                    <p class="text-zinc-400 text-sm leading-relaxed">Premium coffee varieties & multi-cuisine selections for discerning culinary tastes. Open daily 8:00 AM - 11:00 PM.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-white mb-4">Navigation Links</h4>
+                    <ul class="space-y-2 text-sm text-zinc-400">
+                        <li><a href="#menu" class="hover:text-amber-400 transition-colors">Menu Catalogs</a></li>
+                        <li><a href="#gallery" class="hover:text-amber-400 transition-colors">Ambience Gallery</a></li>
+                        <li><a href="#reserve" class="hover:text-amber-400 transition-colors">Table Booking</a></li>
+                        <li><a href="#reviews" class="hover:text-amber-400 transition-colors">Guest Endorsements</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-white mb-4">Contact Info</h4>
+                    <p class="text-zinc-400 text-sm mb-2">📞 <a href="tel:+919362102308" class="hover:text-amber-400">+91 9362102308</a></p>
+                    <p class="text-zinc-400 text-sm mb-2">📍 Agartala, Tripura, India</p>
+                    <p class="text-zinc-400 text-sm">📧 info@veloracafe.com</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-white mb-4">Follow Socials</h4>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-amber-400 transition-colors"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-amber-400 transition-colors"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-amber-400 transition-colors"><i class="fab fa-x-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-zinc-900 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-zinc-500">
+                <p>© 2026 Velora Cafe. All rights reserved.</p>
+                <div class="flex gap-4">
+                    <a href="#" class="hover:text-zinc-400">Privacy Policy</a>
+                    <a href="#" class="hover:text-zinc-400">Terms of Operation</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Sidebar -->
+    <div id="cartSidebar" class="fixed top-0 right-0 h-full w-full md:w-[420px] bg-zinc-950 shadow-2xl translate-x-full transition-transform duration-300 z-[100] flex flex-col border-l border-zinc-800">
+        <div class="p-6 border-b border-zinc-800 flex justify-between items-center bg-black">
+            <h2 class="text-xl font-bold text-white flex items-center gap-2"><span>🛍️</span> Your Order Cart</h2>
+            <button onclick="toggleCart()" class="text-xl hover:text-amber-400 transition-colors p-2">✕</button>
+        </div>
+        <div id="cartContent" class="flex-1 overflow-y-auto p-6 space-y-4">
+            <!-- Dynamic Cart Items Grid -->
+        </div>
+        <div class="p-6 border-t border-zinc-800 bg-black/50">
+            <div class="flex justify-between items-center text-xl font-bold mb-6">
+                <span class="text-zinc-400 text-base font-medium">Aggregate Sum</span>
+                <span id="totalAmount" class="text-amber-400 text-2xl">₹0</span>
+            </div>
+            <button onclick="showPaymentModal()" class="w-full py-4 bg-green-600 hover:bg-green-500 text-white rounded-xl text-base font-semibold transition-colors shadow-lg">Proceed to Settlement</button>
+        </div>
+    </div>
+
+    <!-- Payment Modal Wrapper -->
+    <div id="paymentModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[200] p-6">
+        <div class="bg-zinc-900 w-full max-w-md rounded-2xl p-8 border border-zinc-800 shadow-2xl transform transition-transform">
+            <h3 class="text-2xl font-bold text-white mb-2">Choose Payment Method</h3>
+            <p class="text-sm text-zinc-400 mb-6">Select your preferred dynamic collection mode below.</p>
+            <div class="space-y-4">
+                <button onclick="completePayment('cash')" class="w-full text-left py-4 px-5 border border-zinc-700 hover:border-amber-500 hover:bg-zinc-850 rounded-xl text-white font-medium transition-all flex items-center justify-between">
+                    <span>💰 Pay at Counter (Cash/UPI)</span>
+                    <i class="fa-solid fa-chevron-right text-xs text-zinc-500"></i>
+                </button>
+                <button onclick="completePayment('online')" class="w-full text-left py-4 px-5 bg-green-600 hover:bg-green-500 rounded-xl text-white font-semibold transition-all flex items-center justify-between shadow-md">
+                    <span>💳 Digital Gateway (UPI / Cards)</span>
+                    <i class="fa-solid fa-chevron-right text-xs text-white/70"></i>
+                </button>
+            </div>
+            <button onclick="closePaymentModal()" class="mt-6 w-full py-2.5 text-sm text-zinc-500 hover:text-zinc-300 transition-colors">Dismiss Checkout</button>
+        </div>
+    </div>
+
+    <!-- Application Script Logic -->
+    <script>
+        const menuData = [
+            { id:1, name:"Classic Cappuccino", price:180, category:"beverage", desc:"Rich espresso with velvety foam textures.", img:"https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=600&q=80", emoji:"☕" },
+            { id:2, name:"Avocado Toast", price:320, category:"breakfast", desc:"Smashed organic avocado, perfectly poached eggs & chili flakes.", img:"https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=600&q=80", emoji:"🥑" },
+            { id:3, name:"Truffle Mushroom Pasta", price:450, category:"main", desc:"Fresh house fettuccine tossed in rich cream artisan truffle sauce.", img:"https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?auto=format&fit=crop&w=600&q=80", emoji:"🍝" },
+            { id:4, name:"Blueberry Cheesecake", price:260, category:"dessert", desc:"Authentic New York baked slice layered with fresh berry compote slurry.", img:"https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80", emoji:"🍰" },
+            { id:5, name:"Iced Caramel Latte", price:190, category:"beverage", desc:"Signature cold espresso extraction over iced sweet cream blends.", img:"https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=600&q=80", emoji:"🧊" },
+            { id:6, name:"Espresso Shot", price:120, category:"beverage", desc:"Bold and intense dark premium Single Origin bean pull.", img:"https://images.unsplash.com/photo-1542992015-b8141b27c7e5?auto=format&fit=crop&w=600&q=80", emoji:"☕" },
+            { id:7, name:"Butter Croissant", price:150, category:"breakfast", desc:"Flaky, laminated traditional pastry layers baked crisp gold.", img:"https://images.unsplash.com/photo-1585591206899-b6c0b5a79b1b?auto=format&fit=crop&w=600&q=80", emoji:"🥐" },
+            { id:8, name:"Caesar Salad", price:280, category:"main", desc:"Crisp Romaine crowns dressed in house emulsion cream, parmesan cheese.", img:"https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=600&q=80", emoji:"🥗" },
+            { id:9, name:"Tiramisu Slice", price:240, category:"dessert", desc:"Classic Italian layered espresso-soaked ladyfingers with rich mascarpone mousse.", img:"https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=600&q=80", emoji:"🍮" },
+            { id:10, name:"Caffe Americano", price:140, category:"beverage", desc:"Double espresso structural layers cut smoothly with hot artisan water.", img:"https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=600&q=80", emoji:"☕" },
+            { id:11, name:"Fluffy Pancakes", price:280, category:"breakfast", desc:"Stacked high, served with pure maple nectar syrup and fresh seasonal berries.", img:"https://images.unsplash.com/photo-1567620432463-9ee62458dc0b?auto=format&fit=crop&w=600&q=80", emoji:"🥞" },
+            { id:12, name:"Grilled Salmon Steak", price:520, category:"main", desc:"Pan-seared premium pink salmon topped with velvet lemon-butter reductions.", img:"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80", emoji:"🐟" }
+        ];
+
+        let cart = [];
+        let currentFilter = 'all';
+
+        // Set floor date constraint to today's date for booking
+        document.addEventListener("DOMContentLoaded", () => {
+            const dateSelector = document.getElementById('resDate');
+            if(dateSelector) {
+                const today = new Date().toISOString().split('T')[0];
+                dateSelector.min = today;
+            }
+            renderMenu();
+        });
+
+        function renderMenu() {
+            const container = document.getElementById('menuContainer');
+            if(!container) return;
+            
+            const filteredData = currentFilter === 'all' 
+                ? menuData 
+                : menuData.filter(item => item.category === currentFilter);
+
+            if(filteredData.length === 0) {
+                container.innerHTML = `<p class="col-span-full text-center text-zinc-500 py-12">No culinary items discovered inside this partition.</p>`;
+                return;
+            }
+
+            container.innerHTML = filteredData.map(item => `
+                <div class="bg-zinc-900/40 rounded-2xl p-5 border border-zinc-800 hover:border-amber-500/60 transition-all duration-300 flex flex-col justify-between group">
+                    <div>
+                        <div class="overflow-hidden rounded-xl mb-4 aspect-[4/3] bg-zinc-800">
+                            <img src="${item.img}" alt="${item.name}" loading="lazy" class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300">
+                        </div>
+                        <h3 class="text-lg font-bold text-white">${item.name}</h3>
+                        <p class="text-zinc-400 text-xs mt-1.5 line-clamp-2">${item.desc}</p>
+                    </div>
+                    <div class="flex justify-between items-center mt-5 pt-3 border-t border-zinc-800/60">
+                        <span class="text-xl font-black text-amber-400">₹${item.price}</span>
+                        <button onclick="addToCart(${item.id})" class="bg-amber-500 hover:bg-amber-400 text-black px-4 py-2 rounded-xl text-xs font-bold transition-colors">Add to Cart</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterMenu(category) {
+            currentFilter = category;
+            document.querySelectorAll('.menu-tab').forEach(btn => {
+                btn.classList.remove('bg-amber-500', 'text-black');
+                btn.classList.add('bg-zinc-800', 'text-zinc-300', 'hover:bg-zinc-700');
+            });
+            
+            const targetedTab = document.getElementById(`tab-${category}`);
+            if(targetedTab) {
+                targetedTab.classList.remove('bg-zinc-800', 'text-zinc-300', 'hover:bg-zinc-700');
+                targetedTab.classList.add('bg-amber-500', 'text-black');
+            }
+            renderMenu();
+        }
+
+        function addToCart(id) {
+            const item = menuData.find(m => m.id === id);
+            if(!item) return;
+            const existing = cart.find(i => i.id === id);
+            if (existing) {
+                existing.quantity++;
+            } else {
+                cart.push({...item, quantity: 1});
+            }
+            updateCart();
+            showToast(`🛒 Added ${item.name} into order queue.`);
+        }
+
+        function updateCart() {
+            const totalCountEl = document.getElementById('cartCount');
+            const cartContentEl = document.getElementById('cartContent');
+            const totalAmountEl = document.getElementById('totalAmount');
+            
+            const dynamicTotalItems = cart.reduce((total, item) => total + item.quantity, 0);
+            if(totalCountEl) totalCountEl.textContent = dynamicTotalItems;
+            
+            let accumulatedCost = 0;
+            let listMarkup = '';
+            
+            cart.forEach((item, index) => {
+                accumulatedCost += item.price * item.quantity;
+                listMarkup += `
+                    <div class="flex gap-4 p-3.5 bg-zinc-900 border border-zinc-800 rounded-xl relative group">
+                        <div class="text-3xl bg-zinc-800 p-2.5 rounded-xl h-fit">${item.emoji}</div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-bold text-sm text-white truncate">${item.name}</h4>
+                            <p class="text-amber-400 text-xs font-semibold mt-0.5">₹${item.price} × ${item.quantity}</p>
+                            <div class="flex items-center gap-1 mt-2.5">
+                                <button onclick="changeQty(${index}, -1)" class="w-7 h-7 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm font-bold transition-colors text-zinc-300">−</button>
+                                <span class="w-8 text-center text-xs text-white font-medium">${item.quantity}</span>
+                                <button onclick="changeQty(${index}, 1)" class="w-7 h-7 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm font-bold transition-colors text-zinc-300">+</button>
+                            </div>
+                        </div>
+                        <button onclick="removeFromCart(${index})" class="text-zinc-500 hover:text-red-400 font-medium text-sm transition-colors p-1" aria-label="Remove item">✕</button>
+                    </div>`;
+            });
+            
+            if(cartContentEl) {
+                cartContentEl.innerHTML = listMarkup || `<div class="text-center py-20 text-zinc-600 text-sm flex flex-col items-center justify-center gap-2"><span>Empty Basket</span><p class="text-xs max-w-[180px]">No food selection profiles items are present.</p></div>`;
+            }
+            if(totalAmountEl) totalAmountEl.textContent = `₹${accumulatedCost}`;
+        }
+
+        function changeQty(index, delta) {
+            cart[index].quantity += delta;
+            if (cart[index].quantity < 1) {
+                cart.splice(index, 1);
+            }
+            updateCart();
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        function toggleCart() {
+            const sidebar = document.getElementById('cartSidebar');
+            if(sidebar) sidebar.classList.toggle('translate-x-full');
+        }
+
+        function showPaymentModal() {
+            if (cart.length === 0) {
+                showToast("❌ Selection aggregate registry status: empty.");
+                return;
+            }
+            document.getElementById('paymentModal').classList.remove('hidden');
+        }
+
+        function closePaymentModal() {
+            document.getElementById('paymentModal').classList.add('hidden');
+        }
+
+        function completePayment(method) {
+            const calculatedSum = document.getElementById('totalAmount').textContent;
+            alert(`🎉 Order Dispatched Successfully!\n\nReceipt Amount Value: ${calculatedSum}\nPayment Method Configured: ${method === 'online' ? 'Online Verification Gateway' : 'In-Person Counter Terminal'}\n\nYour fresh meals are currently routed for priority preparation.`);
+            cart = [];
+            updateCart();
+            closePaymentModal();
+            toggleCart();
+        }
+
+        function makeReservation(e) {
+            e.preventDefault();
+            const name = document.getElementById('resName').value.trim();
+            const phone = document.getElementById('resPhone').value.trim();
+            const date = document.getElementById('resDate').value;
+            const time = document.getElementById('resTime').value;
+            const notes = document.getElementById('resNotes').value.trim();
+
+            if (!name || !phone || !date || !time) {
+                showToast('❌ Compulsory parameters missing data values.');
+                return;
+            }
+
+            if (!/^\d{10}$/.test(phone)) {
+                showToast('❌ Numerical structure rule check failed: Needs 10 digits.');
+                return;
+            }
+
+            const targetBookingDate = new Date(date);
+            const relativeCurrentDay = new Date();
+            relativeCurrentDay.setHours(0,0,0,0);
+            
+            if (targetBookingDate < relativeCurrentDay) {
+                showToast('❌ Time violation validation rule conflict: Past structural timelines rejected.');
+                return;
+            }
+
+            alert(`✅ Spatial Reservation Authenticated Successfully!\n\nName: ${name}\nDate: ${date}\nTime Allocation Slot: ${time}\n\nYour receipt system notification logs are generated.`);
+            showToast('✅ Verification matrix success.');
+            e.target.reset();
+        }
+
+        function showToast(msg) {
+            // Remove previous active container structures to prevent overlay staking bugs
+            const activeToasts = document.querySelectorAll('.toast-notification');
+            activeToasts.forEach(toast => toast.remove());
+
+            const structuralNotificationBox = document.createElement('div');
+            structuralNotificationBox.className = "toast-notification toast-slide-in fixed bottom-8 left-1/2 -translate-x-1/2 bg-zinc-900 text-zinc-100 border border-zinc-700 px-6 py-3.5 rounded-xl shadow-2xl z-[300] text-sm tracking-wide font-medium text-center min-w-[280px]";
+            structuralNotificationBox.textContent = msg;
+            
+            document.body.appendChild(structuralNotificationBox);
+            setTimeout(() => {
+                structuralNotificationBox.style.opacity = '0';
+                structuralNotificationBox.style.transform = 'translate(-50%, 20px)';
+                structuralNotificationBox.style.transition = 'all 0.3s ease';
+                setTimeout(() => structuralNotificationBox.remove(), 300);
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
